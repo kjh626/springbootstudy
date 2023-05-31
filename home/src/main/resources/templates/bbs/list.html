@@ -1,19 +1,99 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<!--/* layout/header.html의 head조각으로 head 태그를 바꾼다. */-->
+<!--/* /layout/header.html의 headFrag조각으로 head 태그를 바꾼다. */-->
+<head th:replace="~{/layout/header::headFrag('BBS목록')}"></head>
 
-<head th:replace="~{/layout/header::headFrag('BBS목록')}">
+<!--/* 자바스크립트 내부에서 Variable Expression은 [[${}]] 로 나타낸다. */-->
+<script th:inline="javascript">
 
+  $(function(){
+    
+    // 원글 달기 결과 메시지
+    let addResult = /*[[${addResult}]]*/ null;   // addResult가 전달되지 않는 경우 null을 사용한다.
+    if(addResult !== null){
+      if(addResult === 2) {
+        alert('원글이 달렸습니다.');
+      } else {
+        alert('원글 달기가 실패했습니다.');
+      }
+    }
+    
+    // 게시글 삭제 결과 메시지
+    let removeResult = /*[[${removeResult}]] */ null;   // removeResult가 전달되지 않는 경우 null을 사용한다.
+    if(removeResult !== null){
+      if(removeResult === 1) {
+        alert('게시글이 삭제되었습니다.');
+      } else {
+        alert('게시글 삭제가 실패했습니다.');
+      }
+    }
+    
+    // 답글 달기 결과 메시지
+    let addReplyResult = /*[[${addReplyResult}]]*/ null;  // addReplyResult가 전달되지 않는 경우 null을 사용한다.
+    if(addReplyResult !== null){
+      if(addReplyResult === 1) {
+        alert('답글이 달렸습니다.');
+      } else {
+        alert('답글 달기가 실패했습니다.');
+      }
+    }
+    
+    
+    // 삭제 버튼 이벤트
+    $('.frm_remove').on('submit', function(event){
+      if(confirm('BBS를 삭제할까요?') == false){
+        event.preventDefault();
+        return;
+      }
+    })
+    
+    // 답글 작성 화면 표시/숨기기
+    // 구조 볼 때 F12눌러서 구조 파악해라. 부모, 형제를 찾기할 때 this 기반으로 우리가 원하는 타깃이 어디있는지 코드로 보지말고 F12로 찾아라
+    // removeClass로 지워도 되고, toggleClass로 해도 되고
+    // closest 가장 가까운 조상 (지금은 부모의 부모)
+    $('.btn_reply').on('click', function(){
+
+      
+      // 작성화면
+      let write = $(this).closest('.list').next();  // write는 jQuery객체이다. (jQuery wrapper가 필요 없다.) 뒤에 쓴 것들 다 jQuery메소드니까.
+      
+      // 작성화면이 blind를 가지고 있다 = 다른 작성화면이 열려 있다
+      if(write.hasClass('blind')){
+        
+        $('.write').addClass('blind');  // 모든 작성화면을 닫자
+        write.removeClass('blind');     // 현재 작성화면을 열자
+        
+      // 작성화면이 blind를 가지고 있지 않다 = 현재 작성화면이 열려 있다
+      } else {
+        write.addClass('blind');        // 현재 작성화면을 닫자
+      }
+      // 전부 blind하고 클릭한 write만 blind처리 한다. 닫아주는 것은 안 되고 하나씩만 열린다.
+    })
+    
+  })
+  
+
+</script>
+<style>
+  .blind {
+    display: none;
+  }
+</style>
 
 <body>
 
   <!--/* Variable Expression : ${} (값을 나타낼 때 사용) */-->
 
+
+  <!--/* /layout/header.html의 gnbFrag조각으로 div 태그를 바꾼다. */-->
+  <div th:replace="~{/layout/header::gnbFrag}"></div>
+
+
   <h1>BBS 목록보기</h1>
   
   <div>
-    <a th:href="@{/bbs/write.do}">BBS작성하러가기</a>
+    <a th:href="@{/bbs/write.html}">BBS작성하러가기</a>
   </div>
   
   <hr>
