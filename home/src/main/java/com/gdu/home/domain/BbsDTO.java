@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BbsDTO {
 	private int bbsNo;
-	private String writer;
+	private String writer;  // 작성자의 id
 	private String title;
 	private String ip;
 	private Date createdAt;
